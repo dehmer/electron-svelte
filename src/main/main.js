@@ -1,11 +1,22 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
-const { allowedNodeEnvironmentFlags } = require('process')
+import * as R from 'ramda'
 
 const createWindow = () => {
-  // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  // --static flag is given as command line arg in start script (package.json)
+  const isStatic = ({ process }) => process.argv.indexOf('--static') !== -1
+  const isPackaged = ({ app }) => app.isPackaged
+  const staticFile = () => new URL(path.join(__dirname, 'index.html'), 'file:')
+  const devServer = () => new URL('index.html', 'http://localhost:8080')
+
+  const url = R.cond([
+    [isStatic, staticFile],
+    [isPackaged, staticFile],
+    [R.T, devServer]
+  ])({ process, app })
+
+  const window = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -14,11 +25,7 @@ const createWindow = () => {
     }
   })
 
-  // and load the index.html of the app.
-  mainWindow.loadFile('renderer/index.html')
-
-  // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  window.loadURL(url.toString())
 }
 
 // This method will be called when Electron has finished
