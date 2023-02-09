@@ -6,7 +6,6 @@ const webpack = require('webpack')
 
 const mode = env => env.production ? 'production' : 'development'
 
-
 const rules = (env) => [
   {
     test: /\.js$/,
@@ -84,7 +83,7 @@ const rendererConfig = (env, argv) => ({
 	},
 
   plugins: [
-    new webpack.ExternalsPlugin('commonjs', ['level', 'serialport']),
+    new webpack.ExternalsPlugin('commonjs', ['level']),
     new MiniCssExtractPlugin({ filename: '[name].css' }),
     new CopyPlugin({
       patterns: [
