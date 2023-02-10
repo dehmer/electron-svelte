@@ -35,6 +35,7 @@
     "level": "^8.0.0",
     "level-read-stream": "^1.1.0",
     "memory-level": "^1.0.0",
+    "mousetrap": "^1.6.5",
     "ol": "^7.2.2",
     "ramda": "^0.28.0",
     "uuid-random": "^1.3.2"

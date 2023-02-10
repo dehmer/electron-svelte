@@ -22,9 +22,14 @@ const sessionValue = db => (key, initial) => {
     subscriptions.forEach(fn => fn(value))
   }
 
+  const get = () => db.get(key)
+  const update = async fn => set(fn(await get()))
+
   return {
     subscribe,
-    set
+    set,
+    get,
+    update
   }
 }
 
