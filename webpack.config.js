@@ -103,7 +103,7 @@ const mainConfig = (env, argv) => ({
   entry: { main: './main.js' },
   plugins: [
     // NOTE: Required. Else "Error: No native build was found for ..."
-    new webpack.ExternalsPlugin('commonjs', ['leveldown'])
+    new webpack.ExternalsPlugin('commonjs', ['level'])
   ]
 })
 
