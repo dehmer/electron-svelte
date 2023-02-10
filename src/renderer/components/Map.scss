@@ -1,0 +1,13 @@
+.map {
+  touch-action: none;
+  flex: 1;
+}
+
+/**
+ * Since map controls container has
+ * pointer-events: none, we have to allow
+ * pointer events for rotate control.
+ */
+.ol-rotate {
+  pointer-events: auto;
+}

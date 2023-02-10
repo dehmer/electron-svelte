@@ -88,7 +88,7 @@ const rendererConfig = (env, argv) => ({
     new CopyPlugin({
       patterns: [
         { from: "index.html" },
-        { from: "global.css" },
+        { from: "global.scss" },
         { from: "favicon.png" }
       ]
     })

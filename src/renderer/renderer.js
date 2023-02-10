@@ -1,11 +1,5 @@
-import path from 'path'
-const { Writable, pipeline } = require('readable-stream')
-import { Level } from 'level'
-const { EntryStream } = require('level-read-stream')
-import './global.css';
-
-import App from './App.svelte';
-
+import './global.scss';
+import App from './components/App.svelte';
 
 const app = new App({
 	target: document.body
