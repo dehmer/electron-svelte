@@ -2,8 +2,8 @@
   import { getContext } from 'svelte'
   import './Sidebar.scss'
 
-  const { sessionValue } = getContext('services')
-  const filter = sessionValue('filter', '')
+  const { sessionMemento } = getContext('services')
+  const filter = sessionMemento('filter', '')
 </script>
 
 <div class='sidebar'>

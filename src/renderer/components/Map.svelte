@@ -4,11 +4,15 @@
   import { OSM } from 'ol/source'
   import { Tile as TileLayer } from 'ol/layer'
   import { onMount, onDestroy, getContext } from 'svelte'
+  import { createEventDispatcher } from 'svelte'
 
   let map
   let services = getContext('services')
-  const { sessionValue } = services
+  const { sessionMemento } = services
   let component
+  let loading = 0
+
+  const dispatch = createEventDispatcher()
 
   onMount(async () => {
 
@@ -16,7 +20,7 @@
     const zoom = 14
     const center = [1737884.370211603, 6146136.723228034]
     const defaultViewport = { zoom, center }
-    const viewport = sessionValue('viewport', defaultViewport)
+    const viewport = sessionMemento('viewport', defaultViewport)
     const view = new ol.View(await viewport.get())
 
     view.on('change', () => viewport.set({
@@ -27,10 +31,12 @@
     }))
     // --- SNIP --- 8><--------- <= map.view
 
+    const loadstart = () => (loading += 1)
+    const loadend = () => (loading -= 1)
 
     const source = new OSM()
-    source.on('tileloadstart', () => console.log('tileloadstart'))
-    source.on(['tileloadend', 'tileloaderror'], () => console.log('tileloadend'))
+    source.on('tileloadstart', loadstart)
+    source.on(['tileloadend', 'tileloaderror'], loadend)
     const tileLayer = new TileLayer({ source })
 
     map = new ol.Map({
@@ -47,6 +53,10 @@
     map.setTarget(null)
     map = null
   })
+
+  $: {
+    if (loading === 0) dispatch('ready')
+  }
 </script>
 
 <div bind:this={component} id='map' class='map' tabIndex='0'/>

@@ -10,37 +10,40 @@
   let services
   let splash = true
   let sidebar
+  let dispose
 
-  onMount(async () => (services = await initialize()))
-  onDestroy(() => console.log('destroying...'))
-  setTimeout(() => (splash = false), 1000)
+  onMount(async () => (dispose = await initialize(x => (services = x))))
+  onDestroy(async () => await dispose())
 
   const handleKeyDown = event => {
     if (event.ctrlKey && event.metaKey && event.key === 's') {
       sidebar.update(R.not)
     }
   }
-  
+
+  const handleReady = () => setTimeout(() => (splash = false), 750)
+
   $: {
 	  if (services) {
       setContext('services', services)
-      const { sessionValue } = services
-      sidebar = sessionValue('sidebar', false)
+      const { sessionMemento } = services
+      sidebar = sessionMemento('sidebar', false)
     }
   }
 </script>
 
-{#if splash}
-  <SpashScreen/>
-{:else if services}
+{#if services}
   <div class='site' tabIndex=0 on:keydown={handleKeyDown}>
     <div class='content'>
-      <Map/>
+      <Map on:ready={handleReady}/>
       <div class='overlay'>
         {#if $sidebar}
           <Sidebar/>
         {/if}
       </div>
+      {#if splash}
+        <SpashScreen/>
+      {/if}
     </div>
   </div>
 {/if}

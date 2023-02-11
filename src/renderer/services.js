@@ -1,16 +1,17 @@
+import * as R from 'ramda'
 import path from 'path'
 import { Level } from 'level'
+import { Disposable } from '../lib/disposable'
 
 const arg = key => {
   const entry = process.argv.find(s => s.startsWith(key))
   return entry ? entry.split('=')[1] : ''
 }
 
-const sessionValue = db => (key, initial) => {
+const memento = db => (key, initial) => {
   let subscriptions = []
 
   const subscribe = fn => {
-    // fn(initial)
     subscriptions = subscriptions.concat(fn)
     db.get(key).then(value => fn(value)).catch(() => fn(initial))
     // TODO: register database listener for key?
@@ -22,7 +23,7 @@ const sessionValue = db => (key, initial) => {
     subscriptions.forEach(fn => fn(value))
   }
 
-  const get = () => db.get(key)
+  const get = R.tryCatch(async () => await db.get(key), () => initial)
   const update = async fn => set(fn(await get()))
 
   return {
@@ -33,15 +34,21 @@ const sessionValue = db => (key, initial) => {
   }
 }
 
-export default async () => {
+export default async fn => {
+  const disposable = Disposable.of()
+
   const userData = arg('--user-data-dir')
   const location = path.join(userData, 'databases', '51b54ab9-6f69-437d-b5ab-d9895db7320c')
   const db = new Level(location)
   const sessionDB = db.sublevel('session', { valueEncoding: 'json' })
 
-  return {
+  disposable.add(() => db.close())
+
+  fn({
     db,
     sessionDB,
-    sessionValue: sessionValue(sessionDB)
-  }
+    sessionMemento: memento(sessionDB)
+  })
+
+  return () => disposable.dispose()
 }

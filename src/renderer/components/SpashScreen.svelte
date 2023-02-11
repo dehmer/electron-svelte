@@ -1,15 +1,15 @@
 <script>
   import './SplashScreen.scss'
-  import { slide } from 'svelte/transition'
+  import { slide, fade } from 'svelte/transition'
 </script>
 
-<div class='splash' out:slide={{ duration: 250 }}>
+<div class='splash' out:fade>
   <h1>ODINv2</h1>
   <h2>Electron/Svelte Showcase</h2>
   <div class='address'>
     <span>Syncpoint GmbH</span>
     <span>Simmeringer Hauptstraße 48/2/48</span>
-    <span>A-1110 Wien</span>  
+    <span>A-1110 Wien</span>
   </div>
 </div>
 
