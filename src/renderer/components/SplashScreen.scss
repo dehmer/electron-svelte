@@ -1,0 +1,25 @@
+.splash {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: row;
+  pointer-events: none;
+
+  text-align: center;
+  padding: 1em;
+  max-width: 240px;
+  margin: 0 auto; 
+
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 640px) {
+  .splash {
+    max-width: none;
+  }
+}
