@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import path from 'path'
 import { Level } from 'level'
 import { Disposable } from '../lib/disposable'
@@ -23,7 +22,13 @@ const memento = db => (key, initial) => {
     subscriptions.forEach(fn => fn(value))
   }
 
-  const get = R.tryCatch(async () => await db.get(key), () => initial)
+  const get = async () => {
+    try {
+      return await db.get(key)
+    } catch (err) {
+      return initial
+    }
+  }
   const update = async fn => set(fn(await get()))
 
   return {
